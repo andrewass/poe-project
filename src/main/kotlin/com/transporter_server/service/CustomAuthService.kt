@@ -39,7 +39,7 @@ class CustomAuthService @Autowired constructor(
         val user = findUser(request.username)
         authenticateUser(user!!, request.password)
         val token = generateUserToken()
-        return SignInResponse()
+        return SignInResponse(user, token)
     }
 
     override fun signOutUser(request: SignOutRequest) {
@@ -63,7 +63,7 @@ class CustomAuthService @Autowired constructor(
         if(!passwordEncoder.matches(submittedPassword, user.password)){
             throw IncorrectPasswordException("User : ${user.username}")
         }
-    }
+        }
 
     private fun usernameIsUnavailable(username : String): Boolean {
         return userRepository.findByUsername(username) != null

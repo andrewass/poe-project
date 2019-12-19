@@ -1,4 +1,5 @@
 package com.transporter_server.controllers.responses
 
-class SignInResponse {
-}
+import com.transporter_server.entities.User
+
+class SignInResponse(val user: User, val token: String)

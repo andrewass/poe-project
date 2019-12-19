@@ -22,6 +22,7 @@ configurations {
 }
 
 repositories {
+    jcenter()
     mavenCentral()
 }
 
@@ -33,13 +34,20 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("io.springfox:springfox-swagger2")
+    implementation("io.springfox:springfox-swagger-ui")
+    implementation("io.springfox:springfox-swagger2:2.7.0")
+    implementation("io.springfox:springfox-swagger-ui:2.7.0")
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly ("mysql:mysql-connector-java")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+        exclude(module = "junit")
+        exclude(module = "mockito-core")
     }
     testImplementation("org.springframework.batch:spring-batch-test")
+    testImplementation ("io.mockk:mockk:1.9.3")
 }
 
 allOpen {
