@@ -30,7 +30,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-batch")
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
@@ -38,9 +37,9 @@ dependencies {
     implementation("io.springfox:springfox-swagger-ui")
     implementation("io.springfox:springfox-swagger2:2.7.0")
     implementation("io.springfox:springfox-swagger-ui:2.7.0")
+    runtimeOnly("com.h2database:h2:1.3.176")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-    runtimeOnly ("mysql:mysql-connector-java")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(module = "junit")

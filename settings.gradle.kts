@@ -1,1 +1,1 @@
-rootProject.name = "transporter_server"
+rootProject.name = "transporter.server"
