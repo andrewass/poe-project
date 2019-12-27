@@ -1,1 +1,1 @@
-rootProject.name = "transporter.server"
+rootProject.name = "poe.project"
