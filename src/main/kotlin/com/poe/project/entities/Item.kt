@@ -6,12 +6,18 @@ import javax.persistence.Id
 import javax.persistence.Table
 
 @Entity
-@Table(name = "T_LEAGUE")
-class League(
+@Table(name = "T_ITEM")
+class Item(
         @Id @GeneratedValue
         val id: Long? = null,
 
-        val name: String = "",
+        val itemLabel: String = "",
 
-        var active: Boolean = true
+        val itemName: String = "",
+
+        val itemType: String = "",
+
+        val itemText: String = "",
+
+        val uniqueItem: Boolean = false
 )

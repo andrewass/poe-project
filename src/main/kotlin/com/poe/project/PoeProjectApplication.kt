@@ -6,9 +6,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 @SpringBootApplication
 @EnableSwagger2
-class TransporterServerApplication
+class PoeProjectApplication
 
 fun main(args: Array<String>) {
-    runApplication<TransporterServerApplication>(*args) {
+    runApplication<PoeProjectApplication>(*args) {
     }
 }

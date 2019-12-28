@@ -7,6 +7,8 @@ interface LeagueRepository : JpaRepository<League, Long> {
 
     fun findByName(name : String) : League?
 
+    fun findLeagueByName(name : String) : League?
+
     fun findByActiveIsTrue() : List<League>
 
 }

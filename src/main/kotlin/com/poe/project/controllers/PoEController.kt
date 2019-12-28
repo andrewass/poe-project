@@ -1,5 +1,6 @@
 package com.poe.project.controllers
 
+import com.poe.project.entities.Item
 import com.poe.project.entities.League
 import com.poe.project.service.PoEService
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,7 +20,15 @@ class PoEController @Autowired constructor(
     @GetMapping("/leagues")
     @CrossOrigin("*")
     fun getActiveLeagues(): ResponseEntity<List<League>> {
-        val leagueList = poeService.findActiveLeagues()
-        return ResponseEntity(leagueList, HttpStatus.OK)
+        val leagues = poeService.findActiveLeagues()
+        return ResponseEntity(leagues, HttpStatus.OK)
     }
+
+    @GetMapping("/items")
+    @CrossOrigin("*")
+    fun getItems() : ResponseEntity<List<Item>> {
+        val items = poeService.findItems()
+        return ResponseEntity(items, HttpStatus.OK)
+    }
+
 }

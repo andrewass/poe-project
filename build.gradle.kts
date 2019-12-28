@@ -37,8 +37,8 @@ dependencies {
     implementation("io.springfox:springfox-swagger-ui")
     implementation("io.springfox:springfox-swagger2:2.7.0")
     implementation("io.springfox:springfox-swagger-ui:2.7.0")
+    implementation("org.json:json:20090211")
     runtimeOnly("com.h2database:h2:1.3.176")
-
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
