@@ -2,6 +2,7 @@ package com.poe.project.controllers
 
 import com.poe.project.controllers.requests.SignInRequest
 import com.poe.project.controllers.requests.SignUpRequest
+import com.poe.project.controllers.requests.SignOutRequest
 import com.poe.project.controllers.responses.SignInResponse
 import com.poe.project.exceptions.UsernameNotAvailableException
 import com.poe.project.service.AuthenticationService
@@ -32,8 +33,16 @@ class AuthenticationController @Autowired constructor(
     }
 
     @PostMapping("/sign-in")
-    @CrossOrigin("**")
+    @CrossOrigin("*")
     fun signInUser(@RequestBody signInRequest: SignInRequest): ResponseEntity<SignInResponse> {
+        val signInResponse = authenticationService.signInUser(signInRequest)
+        return ResponseEntity(signInResponse, HttpStatus.OK)
+    }
+
+    @PostMapping("/sign-out")
+    @CrossOrigin("*")
+    fun signOutUser(@RequestBody signOutRequest : SignOutRequest) : ResponseEntity<HttpStatus> {
+        authenticationService.signOutUser(signOutRequest)
         return ResponseEntity(HttpStatus.OK)
     }
 }

@@ -1,15 +1,14 @@
 package com.poe.project.controllers
 
+import com.poe.project.consumer.objects.TradeItemDTO
+import com.poe.project.controllers.requests.FindTradeItemsRequest
 import com.poe.project.entities.Item
 import com.poe.project.entities.League
 import com.poe.project.service.PoEService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.CrossOrigin
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/poe")
@@ -26,9 +25,17 @@ class PoEController @Autowired constructor(
 
     @GetMapping("/items")
     @CrossOrigin("*")
-    fun getItems() : ResponseEntity<List<Item>> {
+    fun getItems(): ResponseEntity<List<Item>> {
         val items = poeService.findItems()
         return ResponseEntity(items, HttpStatus.OK)
+    }
+
+    @PostMapping("/trade-items")
+    @CrossOrigin("*")
+    fun getTradeItems(@RequestBody findTradeItemsRequest: FindTradeItemsRequest)
+            : ResponseEntity<List<TradeItemDTO>> {
+        val tradeItems = poeService.findTradeItems(findTradeItemsRequest)
+        return ResponseEntity(tradeItems, HttpStatus.OK)
     }
 
 }

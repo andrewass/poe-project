@@ -1,7 +1,9 @@
 package com.poe.project.consumer
 
 import com.poe.project.consumer.objects.ItemDTO
+import com.poe.project.consumer.objects.TradeItemDTO
 import org.json.JSONArray
+import org.json.JSONObject
 
 
 fun mapItems(items: JSONArray): List<ItemDTO> {
@@ -11,6 +13,33 @@ fun mapItems(items: JSONArray): List<ItemDTO> {
         itemsDTO.addAll(mapLabel(item.getString("label"), item.getJSONArray("entries")))
     }
     return itemsDTO
+}
+
+
+fun mapTradeItems(itemName: String, responseBody : String) : List<TradeItemDTO> {
+    val items = JSONArray(responseBody)
+    val tradeItems = mutableListOf<TradeItemDTO>()
+    for(i in 0 until items.length()){
+        val item = items.get(i)
+        if(item is JSONObject) {
+            val tradeItem = TradeItemDTO(
+                    name = itemName,
+
+                    id = item.getString("id"),
+
+                    currency = item.getJSONObject("listing")
+                            .getJSONObject("price").getString("currency"),
+
+                    currencyAmount = item.getJSONObject("listing")
+                            .getJSONObject("price").getInt("amount"),
+
+                    imageUrl = item.getJSONObject("item")
+                            .getString("icon")
+            )
+            tradeItems.add(tradeItem)
+        }
+    }
+    return tradeItems
 }
 
 private fun mapLabel(itemLabel: String, entries: JSONArray): List<ItemDTO> {
@@ -28,3 +57,4 @@ private fun mapLabel(itemLabel: String, entries: JSONArray): List<ItemDTO> {
     }
     return itemsDTO
 }
+

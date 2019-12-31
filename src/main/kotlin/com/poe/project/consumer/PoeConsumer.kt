@@ -4,8 +4,8 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.poe.project.consumer.objects.ItemDTO
 import com.poe.project.consumer.objects.LeagueDTO
+import com.poe.project.consumer.objects.TradeItemDTO
 import com.poe.project.consumer.requests.createTradeItemRequest
-import com.poe.project.entities.League
 import org.codehaus.jettison.json.JSONObject
 import org.json.JSONArray
 import org.slf4j.LoggerFactory
@@ -66,8 +66,8 @@ class PoEConsumer @Autowired constructor(
         }
     }
 
-    fun findItemsForTrade(itemName : String, league : League) : String {
-        val urlPath = "$baseUrl/api/trade/search/${league.name}"
+    fun findItemsForTrade(itemName : String, league : String) : List<TradeItemDTO> {
+        val urlPath = "$baseUrl/api/trade/search/$league"
         val httpEntity = HttpEntity(createTradeItemRequest(itemName), createHeaders())
 
         val response = restTemplate.exchange(urlPath,
@@ -75,7 +75,8 @@ class PoEConsumer @Autowired constructor(
                 httpEntity,
                 String::class.java)
 
-        return fetchItems(buildResultString(response .body!!))
+        val responseBody = fetchItems(buildResultString(response.body!!))
+        return mapTradeItems(itemName, extractValuesFromResult(responseBody))
     }
 
     private fun fetchItems(items : String) : String{

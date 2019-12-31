@@ -25,7 +25,7 @@ class PoEConsumerTest {
 
     @Test
     fun shouldReturnStatus200WhenFetchingNamedItem(){
-        val standardLeague = League(name = "Standard")
-        val result = poeConsumer.findItemsForTrade("Tabula Rasa",standardLeague)
+        val result = poeConsumer.findItemsForTrade("Tabula Rasa","Standard")
+        val test = 11
     }
 }
