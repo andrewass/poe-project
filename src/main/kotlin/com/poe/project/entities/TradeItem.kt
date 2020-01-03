@@ -5,8 +5,10 @@ import java.time.LocalDate
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.Id
+import javax.persistence.Table
 
 @Entity
+@Table(name = "T_TRADE_ITEM")
 class TradeItem(
 
         @Id
@@ -22,6 +24,6 @@ class TradeItem(
         val currencyAmount : Int = 0,
 
         @CreatedDate
-        val date: LocalDate = LocalDate.now()
+        val date_created: LocalDate = LocalDate.now()
 
 )
