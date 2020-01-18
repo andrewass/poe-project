@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
+import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
 import java.lang.Integer.min
 
@@ -30,7 +31,7 @@ class PoEConsumer @Autowired constructor(
 
     private val log = LoggerFactory.getLogger(PoEConsumer::class.java)
 
-    fun getItems() : List<ItemDTO> {
+    fun getItems(): List<ItemDTO> {
         val urlPath = "$baseUrl/api/trade/data/items"
         val httpEntity = HttpEntity("body", createHeaders())
 
@@ -41,7 +42,7 @@ class PoEConsumer @Autowired constructor(
 
         return if (response.statusCode.is2xxSuccessful) {
             val responseBody = extractValuesFromResult(response.body!!)
-            return mapItems(JSONArray( responseBody))
+            return mapItems(JSONArray(responseBody))
         } else {
             log.error("Unable to fetch leagues : Statuscode ${response.statusCode}")
             emptyList()
@@ -66,20 +67,25 @@ class PoEConsumer @Autowired constructor(
         }
     }
 
-    fun findItemsForTrade(itemName : String, league : String) : List<TradeItemDTO> {
+    fun findItemsForTrade(itemName: String, league: String): List<TradeItemDTO> {
         val urlPath = "$baseUrl/api/trade/search/$league"
         val httpEntity = HttpEntity(createTradeItemRequest(itemName), createHeaders())
 
-        val response = restTemplate.exchange(urlPath,
-                HttpMethod.POST,
-                httpEntity,
-                String::class.java)
+        return try {
+            val response = restTemplate.exchange(urlPath,
+                    HttpMethod.POST,
+                    httpEntity,
+                    String::class.java)
 
-        val responseBody = fetchItems(buildResultString(response.body!!))
-        return mapTradeItems(itemName, extractValuesFromResult(responseBody))
+            val responseBody = fetchItems(buildResultString(response.body!!))
+            mapTradeItems(itemName, extractValuesFromResult(responseBody))
+        } catch (e: HttpClientErrorException) {
+            log.error("${e.message} : Itemname : $itemName")
+            emptyList()
+        }
     }
 
-    private fun fetchItems(items : String) : String{
+    private fun fetchItems(items: String): String {
         val urlPath = "$baseUrl/api/trade/fetch/$items"
         val httpEntity = HttpEntity("body", createHeaders())
 
@@ -91,15 +97,15 @@ class PoEConsumer @Autowired constructor(
         return response.body!!
     }
 
-    private fun buildResultString(response : String) : String {
+    private fun buildResultString(response: String): String {
         val jsonBody = JSONObject(response)
         val items = jsonBody.getJSONArray("result")
 
         val result = StringBuilder("")
         val maxResults = min(5, items.length())
-        for(i in 0 until maxResults){
+        for (i in 0 until maxResults) {
             result.append(items[i])
-            if(i < items.length()-2){
+            if (i < items.length() - 2) {
                 result.append(",")
             }
         }
