@@ -1,6 +1,7 @@
 package com.poe.project.consumer
 
 import com.poe.project.consumer.objects.ItemDTO
+import com.poe.project.consumer.objects.StaticItemDTO
 import com.poe.project.consumer.objects.TradeItemDTO
 import org.json.JSONArray
 import org.json.JSONObject
@@ -15,13 +16,28 @@ fun mapItems(items: JSONArray): List<ItemDTO> {
     return itemsDTO
 }
 
+fun mapStaticItems(items: JSONArray, baseUrl : String): List<StaticItemDTO> {
+    val staticItemsDTO = mutableListOf<StaticItemDTO>()
+    val currencyArray = getCurrencyArray(items)
+    for (i in 0 until currencyArray.length()) {
+        val currency = currencyArray.getJSONObject(i)
+        val staticItem = StaticItemDTO(
+                id = currency.getString("id"),
+                text = currency.getString("text"),
+                image = baseUrl + currency.getString("image")
+        )
+        staticItemsDTO.add(staticItem)
+    }
+    return staticItemsDTO
+}
 
-fun mapTradeItems(itemName: String, responseBody : String) : List<TradeItemDTO> {
+
+fun mapTradeItems(itemName: String, responseBody: String): List<TradeItemDTO> {
     val items = JSONArray(responseBody)
     val tradeItems = mutableListOf<TradeItemDTO>()
-    for(i in 0 until items.length()){
+    for (i in 0 until items.length()) {
         val item = items.get(i)
-        if(item is JSONObject) {
+        if (item is JSONObject) {
             val tradeItem = TradeItemDTO(
                     name = itemName,
 
@@ -40,6 +56,16 @@ fun mapTradeItems(itemName: String, responseBody : String) : List<TradeItemDTO> 
         }
     }
     return tradeItems
+}
+
+private fun getCurrencyArray(staticItems: JSONArray): JSONArray {
+    for (i in 0 until staticItems.length()) {
+        val staticItem = staticItems.getJSONObject(i)
+        if (staticItem.getString("id").equals("Currency")) {
+            return staticItem.getJSONArray("entries")
+        }
+    }
+    return JSONArray()
 }
 
 private fun mapLabel(itemLabel: String, entries: JSONArray): List<ItemDTO> {

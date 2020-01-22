@@ -3,13 +3,16 @@ package com.poe.project.service
 import com.poe.project.consumer.PoEConsumer
 import com.poe.project.consumer.objects.ItemDTO
 import com.poe.project.consumer.objects.LeagueDTO
+import com.poe.project.consumer.objects.StaticItemDTO
 import com.poe.project.consumer.objects.TradeItemDTO
 import com.poe.project.controllers.requests.FindTradeItemsRequest
 import com.poe.project.entities.Item
 import com.poe.project.entities.League
+import com.poe.project.entities.StaticItem
 import com.poe.project.entities.TradeItem
 import com.poe.project.repositories.ItemRepository
 import com.poe.project.repositories.LeagueRepository
+import com.poe.project.repositories.StaticItemRepository
 import com.poe.project.repositories.TradeItemRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -19,7 +22,8 @@ class CustomPoEService @Autowired constructor(
         private val leagueRepository: LeagueRepository,
         private val itemRepository: ItemRepository,
         private val tradeItemRepository: TradeItemRepository,
-        private val poeConsumer: PoEConsumer
+        private val poeConsumer: PoEConsumer,
+        private val staticItemRepository: StaticItemRepository
 ) : PoEService {
 
     override fun findActiveLeagues(): List<League> {
@@ -44,6 +48,12 @@ class CustomPoEService @Autowired constructor(
         return resultDTO
     }
 
+    override fun findStaticItems(): List<StaticItem> {
+        val staticItemsDto = poeConsumer.getStaticItems()
+        return staticItemRepository.saveAll(convertToStaticItems(staticItemsDto))
+    }
+
+
     private fun storeTradeItems(fetchedItems: List<TradeItemDTO>) {
         val itemsToSave = fetchedItems
                 .filter { tradeItemRepository.findByItemId(it.id) == null }
@@ -53,10 +63,24 @@ class CustomPoEService @Autowired constructor(
         tradeItemRepository.saveAll(itemsToSave)
     }
 
+    private fun convertToStaticItems(staticItemsDto: List<StaticItemDTO>): List<StaticItem> {
+        return staticItemsDto
+                .map { convertToStaticItem(it) }
+                .toList()
+    }
+
     private fun convertToItems(fetchedItems: List<ItemDTO>): List<Item> {
         return fetchedItems
                 .map { convertToItem(it) }
                 .toList()
+    }
+
+    private fun convertToStaticItem(staticItemDto : StaticItemDTO) : StaticItem {
+        return StaticItem(
+                shortName = staticItemDto.id,
+                fullName = staticItemDto.text,
+                imageUrl = staticItemDto.image
+        )
     }
 
     private fun convertToItem(item: ItemDTO): Item {

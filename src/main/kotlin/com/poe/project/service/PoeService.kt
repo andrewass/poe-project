@@ -4,11 +4,14 @@ import com.poe.project.consumer.objects.TradeItemDTO
 import com.poe.project.controllers.requests.FindTradeItemsRequest
 import com.poe.project.entities.Item
 import com.poe.project.entities.League
+import com.poe.project.entities.StaticItem
 
 interface PoEService {
     fun findActiveLeagues(): List<League>
 
     fun findItems(): List<Item>
 
-    fun findTradeItems(findTradeItemsRequest: FindTradeItemsRequest): List<TradeItemDTO>
+    fun findTradeItems(request: FindTradeItemsRequest): List<TradeItemDTO>
+
+    fun findStaticItems(): List<StaticItem>
 }

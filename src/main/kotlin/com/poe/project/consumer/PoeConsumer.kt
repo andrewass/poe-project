@@ -4,8 +4,10 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.poe.project.consumer.objects.ItemDTO
 import com.poe.project.consumer.objects.LeagueDTO
+import com.poe.project.consumer.objects.StaticItemDTO
 import com.poe.project.consumer.objects.TradeItemDTO
 import com.poe.project.consumer.requests.createTradeItemRequest
+import com.poe.project.entities.StaticItem
 import org.codehaus.jettison.json.JSONObject
 import org.json.JSONArray
 import org.slf4j.LoggerFactory
@@ -29,7 +31,30 @@ class PoEConsumer @Autowired constructor(
     @Value("\${poe.base.url}")
     private lateinit var baseUrl: String
 
+    @Value("\${poe.image.url}")
+    private lateinit var imageUrl: String
+
     private val log = LoggerFactory.getLogger(PoEConsumer::class.java)
+
+    fun getStaticItems() : List<StaticItemDTO>{
+        val urlPath = "$baseUrl/api/trade/data/static"
+        val httpEntity = HttpEntity("body", createHeaders())
+
+        val response = restTemplate.exchange(urlPath,
+                HttpMethod.GET,
+                httpEntity,
+                String::class.java)
+
+        return if (response.statusCode.is2xxSuccessful) {
+            val responseBody = extractValuesFromResult(response.body!!)
+            val res = mapStaticItems(JSONArray(responseBody), imageUrl)
+            res
+        } else {
+            log.error("Unable to fetch static items : Statuscode ${response.statusCode}")
+            emptyList()
+        }
+
+    }
 
     fun getItems(): List<ItemDTO> {
         val urlPath = "$baseUrl/api/trade/data/items"

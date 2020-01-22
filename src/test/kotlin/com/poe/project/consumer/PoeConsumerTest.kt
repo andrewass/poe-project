@@ -1,8 +1,5 @@
 package com.poe.project.consumer
 
-import com.poe.project.consumer.objects.LeagueDTO
-import com.poe.project.entities.League
-import com.poe.project.repositories.LeagueRepository
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -24,8 +21,13 @@ class PoEConsumerTest {
     }
 
     @Test
-    fun shouldReturnStatus200WhenFetchingNamedItem(){
-        val result = poeConsumer.findItemsForTrade("Tabula Rasa","Standard")
+    fun shouldReturnStatus200WhenFetchingStaticItems() {
+        val staticItems = poeConsumer.getStaticItems()
+    }
+
+    @Test
+    fun shouldReturnStatus200WhenFetchingNamedItem() {
+        val result = poeConsumer.findItemsForTrade("Tabula Rasa", "Standard")
         val test = 11
     }
 }
