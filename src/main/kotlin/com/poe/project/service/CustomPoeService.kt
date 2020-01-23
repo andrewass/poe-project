@@ -9,7 +9,7 @@ import com.poe.project.controllers.requests.FindTradeItemsRequest
 import com.poe.project.entities.Item
 import com.poe.project.entities.League
 import com.poe.project.entities.StaticItem
-import com.poe.project.entities.TradeItem
+import com.poe.project.entities.tradeitem.TradeItem
 import com.poe.project.repositories.ItemRepository
 import com.poe.project.repositories.LeagueRepository
 import com.poe.project.repositories.StaticItemRepository

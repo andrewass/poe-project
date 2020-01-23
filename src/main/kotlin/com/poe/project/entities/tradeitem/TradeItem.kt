@@ -1,11 +1,8 @@
-package com.poe.project.entities
+package com.poe.project.entities.tradeitem
 
 import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDate
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
 @Table(name = "T_TRADE_ITEM")
@@ -19,9 +16,14 @@ class TradeItem(
 
         val name: String = "",
 
-        val currency : String = "",
+        val currency: String = "",
 
-        val currencyAmount : Int = 0,
+        val currencyAmount: Int = 0,
+
+        val isCorrupted: Boolean = false,
+
+        @OneToMany(mappedBy = "tradeItem", cascade = [CascadeType.ALL])
+        val sockets: List<Socket> = ArrayList(),
 
         @CreatedDate
         val date_created: LocalDate = LocalDate.now()
