@@ -1,13 +1,10 @@
 package com.poe.project.consumer
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.poe.project.consumer.objects.ItemDTO
-import com.poe.project.consumer.objects.LeagueDTO
-import com.poe.project.consumer.objects.StaticItemDTO
-import com.poe.project.consumer.objects.TradeItemDTO
 import com.poe.project.consumer.requests.createTradeItemRequest
+import com.poe.project.entities.Item
+import com.poe.project.entities.League
 import com.poe.project.entities.StaticItem
+import com.poe.project.entities.tradeitem.TradeItem
 import org.codehaus.jettison.json.JSONObject
 import org.json.JSONArray
 import org.slf4j.LoggerFactory
@@ -36,7 +33,7 @@ class PoEConsumer @Autowired constructor(
 
     private val log = LoggerFactory.getLogger(PoEConsumer::class.java)
 
-    fun getStaticItems() : List<StaticItemDTO>{
+    fun getStaticItems(): List<StaticItem> {
         val urlPath = "$baseUrl/api/trade/data/static"
         val httpEntity = HttpEntity("body", createHeaders())
 
@@ -56,7 +53,7 @@ class PoEConsumer @Autowired constructor(
 
     }
 
-    fun getItems(): List<ItemDTO> {
+    fun getItems(): List<Item> {
         val urlPath = "$baseUrl/api/trade/data/items"
         val httpEntity = HttpEntity("body", createHeaders())
 
@@ -74,7 +71,7 @@ class PoEConsumer @Autowired constructor(
         }
     }
 
-    fun getLeagues(): List<LeagueDTO> {
+    fun getLeagues(): List<League> {
         val urlPath = "$baseUrl/api/trade/data/leagues"
         val httpEntity = HttpEntity("body", createHeaders())
 
@@ -85,14 +82,14 @@ class PoEConsumer @Autowired constructor(
 
         return if (response.statusCode.is2xxSuccessful) {
             val responseBody = extractValuesFromResult(response.body!!)
-            return jacksonObjectMapper().readValue(responseBody)
+            return mapLeagues(JSONArray(responseBody))
         } else {
             log.error("Unable to fetch leagues : Statuscode ${response.statusCode}")
             emptyList()
         }
     }
 
-    fun findItemsForTrade(itemName: String, league: String): List<TradeItemDTO> {
+    fun findItemsForTrade(itemName: String, league: String): List<TradeItem> {
         val urlPath = "$baseUrl/api/trade/search/$league"
         val httpEntity = HttpEntity(createTradeItemRequest(itemName), createHeaders())
 

@@ -12,6 +12,8 @@ class StaticItem(
         @Id @GeneratedValue
         val id: Long? = null,
 
+        val stringId: String = "",
+
         val shortName: String = "",
 
         val fullName: String = "",

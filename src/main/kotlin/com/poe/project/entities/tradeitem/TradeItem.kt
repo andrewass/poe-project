@@ -20,6 +20,8 @@ class TradeItem(
 
         val currencyAmount: Int = 0,
 
+        val imageUrl: String = "",
+
         val isCorrupted: Boolean = false,
 
         @OneToMany(mappedBy = "tradeItem", cascade = [CascadeType.ALL])
