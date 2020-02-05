@@ -1,6 +1,7 @@
 package com.poe.project.controllers
 
 import com.poe.project.controllers.requests.FindTradeItemsRequest
+import com.poe.project.controllers.requests.StashFetchingRequest
 import com.poe.project.entities.Item
 import com.poe.project.entities.League
 import com.poe.project.entities.StaticItem
@@ -16,6 +17,19 @@ import org.springframework.web.bind.annotation.*
 class PoEController @Autowired constructor(
         private val poeService: PoEService
 ) {
+
+    @PostMapping("/start-stash-fetch")
+    @CrossOrigin("*")
+    fun startStashFetching(@RequestBody request: StashFetchingRequest) : HttpStatus {
+        poeService.fetchStashItems(request.fetchId)
+        return HttpStatus.OK
+    }
+
+    @PostMapping("/stop-stash-fetch")
+    fun stopStashFetching() : HttpStatus {
+        poeService.stopStashFetching()
+        return HttpStatus.OK
+    }
 
     @GetMapping("/leagues")
     @CrossOrigin("*")

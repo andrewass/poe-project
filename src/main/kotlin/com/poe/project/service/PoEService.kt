@@ -14,4 +14,8 @@ interface PoEService {
     fun findTradeItems(request: FindTradeItemsRequest): List<TradeItem>
 
     fun findStaticItems(): List<StaticItem>
+
+    fun fetchStashItems(fetchId : String)
+
+    fun stopStashFetching()
 }

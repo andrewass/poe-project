@@ -31,6 +31,13 @@ class PoEConsumer @Autowired constructor(
     @Value("\${poe.image.url}")
     private lateinit var imageUrl: String
 
+    @Value("\${poe.stash.url}")
+    private lateinit var stashUrl : String
+
+    fun parseStashTabs(nextId : String) : String{
+        return ""
+    }
+
     private val log = LoggerFactory.getLogger(PoEConsumer::class.java)
 
     fun getStaticItems(): List<StaticItem> {

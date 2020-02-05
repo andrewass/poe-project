@@ -10,6 +10,9 @@ import com.poe.project.repositories.ItemRepository
 import com.poe.project.repositories.LeagueRepository
 import com.poe.project.repositories.StaticItemRepository
 import com.poe.project.repositories.TradeItemRepository
+import org.apache.juli.logging.LogFactory
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 
@@ -21,6 +24,9 @@ class CustomPoEService @Autowired constructor(
         private val poeConsumer: PoEConsumer,
         private val staticItemRepository: StaticItemRepository
 ) : PoEService {
+
+    private var keepFetchingStashTabs = false
+    private val log = LoggerFactory.getLogger(CustomPoEService::class.java)
 
     override fun findActiveLeagues(): List<League> {
         val activeLeagues = poeConsumer.getLeagues()
@@ -47,6 +53,27 @@ class CustomPoEService @Autowired constructor(
     override fun findStaticItems(): List<StaticItem> {
         val staticItems = poeConsumer.getStaticItems()
         return staticItemRepository.saveAll(staticItems)
+    }
+
+    override fun fetchStashItems(fetchId: String) {
+        if(keepFetchingStashTabs){
+            log.info("Fetching of stash items already in progress. Stop current fetch process before starting a new one")
+            return
+        }
+        var fetchedId = fetchId
+        keepFetchingStashTabs = true
+        Thread {
+            while (keepFetchingStashTabs) {
+                log.info("Fetching next page of stash tabs, using id $fetchedId")
+                fetchedId = poeConsumer.parseStashTabs(fetchedId)
+                Thread.sleep(10000)
+            }
+        }.start()
+    }
+
+    override fun stopStashFetching() {
+        log.info("Stopping stash tab fetching")
+        keepFetchingStashTabs = false
     }
 
     private fun setInactiveLeagues(activeLeagues: List<League>, storedActiveLeagues: List<League>) {

@@ -14,11 +14,13 @@ class TradeItem(
 
         val itemId: String = "",
 
+        val stashId: String = "",
+
         val name: String = "",
 
         val currency: String = "",
 
-        val currencyAmount: Int = 0,
+        val currencyAmount: Int = -1,
 
         val imageUrl: String = "",
 
