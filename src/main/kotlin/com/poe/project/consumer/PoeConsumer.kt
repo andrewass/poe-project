@@ -1,10 +1,7 @@
 package com.poe.project.consumer
 
-import com.poe.project.consumer.requests.createTradeItemRequest
-import com.poe.project.entities.Item
 import com.poe.project.entities.League
 import com.poe.project.entities.StaticItem
-import com.poe.project.entities.tradeitem.TradeItem
 import org.codehaus.jettison.json.JSONObject
 import org.json.JSONArray
 import org.slf4j.LoggerFactory
@@ -15,15 +12,14 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
-import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
-import java.lang.Integer.min
 
 
 @Component
 class PoEConsumer @Autowired constructor(
         private val restTemplate: RestTemplate
 ) {
+    private val EMPTY_RESPONSE = ""
 
     @Value("\${poe.base.url}")
     private lateinit var baseUrl: String
@@ -32,13 +28,26 @@ class PoEConsumer @Autowired constructor(
     private lateinit var imageUrl: String
 
     @Value("\${poe.stash.url}")
-    private lateinit var stashUrl : String
-
-    fun parseStashTabs(nextId : String) : String{
-        return ""
-    }
+    private lateinit var stashUrl: String
 
     private val log = LoggerFactory.getLogger(PoEConsumer::class.java)
+
+    fun parseStashTabs(nextId: String): String {
+        val urlPath = stashUrl + if (nextId.isEmpty()) "" else "?id=$nextId"
+        val httpEntity = HttpEntity("body", createHeaders())
+
+        val response = restTemplate.exchange(urlPath,
+                HttpMethod.GET,
+                httpEntity,
+                String::class.java)
+
+        return if(response.statusCode.is2xxSuccessful){
+            response.body ?: EMPTY_RESPONSE
+        } else {
+            log.error("Unable to fetch stash tab for path $urlPath")
+            EMPTY_RESPONSE
+        }
+    }
 
     fun getStaticItems(): List<StaticItem> {
         val urlPath = "$baseUrl/api/trade/data/static"
@@ -60,24 +69,6 @@ class PoEConsumer @Autowired constructor(
 
     }
 
-    fun getItems(): List<Item> {
-        val urlPath = "$baseUrl/api/trade/data/items"
-        val httpEntity = HttpEntity("body", createHeaders())
-
-        val response = restTemplate.exchange(urlPath,
-                HttpMethod.GET,
-                httpEntity,
-                String::class.java)
-
-        return if (response.statusCode.is2xxSuccessful) {
-            val responseBody = extractValuesFromResult(response.body!!)
-            return mapItems(JSONArray(responseBody))
-        } else {
-            log.error("Unable to fetch leagues : Statuscode ${response.statusCode}")
-            emptyList()
-        }
-    }
-
     fun getLeagues(): List<League> {
         val urlPath = "$baseUrl/api/trade/data/leagues"
         val httpEntity = HttpEntity("body", createHeaders())
@@ -94,51 +85,6 @@ class PoEConsumer @Autowired constructor(
             log.error("Unable to fetch leagues : Statuscode ${response.statusCode}")
             emptyList()
         }
-    }
-
-    fun findItemsForTrade(itemName: String, league: String): List<TradeItem> {
-        val urlPath = "$baseUrl/api/trade/search/$league"
-        val httpEntity = HttpEntity(createTradeItemRequest(itemName), createHeaders())
-
-        return try {
-            val response = restTemplate.exchange(urlPath,
-                    HttpMethod.POST,
-                    httpEntity,
-                    String::class.java)
-
-            val responseBody = fetchItems(buildResultString(response.body!!))
-            mapTradeItems(itemName, extractValuesFromResult(responseBody))
-        } catch (e: HttpClientErrorException) {
-            log.error("${e.message} : Itemname : $itemName")
-            emptyList()
-        }
-    }
-
-    private fun fetchItems(items: String): String {
-        val urlPath = "$baseUrl/api/trade/fetch/$items"
-        val httpEntity = HttpEntity("body", createHeaders())
-
-        val response = restTemplate.exchange(urlPath,
-                HttpMethod.GET,
-                httpEntity,
-                String::class.java)
-
-        return response.body!!
-    }
-
-    private fun buildResultString(response: String): String {
-        val jsonBody = JSONObject(response)
-        val items = jsonBody.getJSONArray("result")
-
-        val result = StringBuilder("")
-        val maxResults = min(5, items.length())
-        for (i in 0 until maxResults) {
-            result.append(items[i])
-            if (i < items.length() - 2) {
-                result.append(",")
-            }
-        }
-        return result.toString()
     }
 
     private fun extractValuesFromResult(responseBody: String): String {

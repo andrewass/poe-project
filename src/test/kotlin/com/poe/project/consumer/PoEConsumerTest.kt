@@ -14,20 +14,4 @@ class PoEConsumerTest {
     fun shouldReturnStatus200WhenFetchingSeasons() {
         poeConsumer.getLeagues()
     }
-
-    @Test
-    fun shouldReturnStatus200WhenFetchingItems() {
-        val items = poeConsumer.getItems()
-    }
-
-    @Test
-    fun shouldReturnStatus200WhenFetchingStaticItems() {
-        val staticItems = poeConsumer.getStaticItems()
-    }
-
-    @Test
-    fun shouldReturnStatus200WhenFetchingNamedItem() {
-        val result = poeConsumer.findItemsForTrade("Tabula Rasa", "Standard")
-        val test = 11
-    }
 }
