@@ -2,9 +2,10 @@ package com.poe.project.service
 
 import com.poe.project.consumer.PoEConsumer
 import com.poe.project.entities.League
+import com.poe.project.entities.Stash
 import com.poe.project.entities.StaticItem
-import com.poe.project.repositories.ItemRepository
 import com.poe.project.repositories.LeagueRepository
+import com.poe.project.repositories.PoeItemRepository
 import com.poe.project.repositories.StaticItemRepository
 import com.poe.project.service.response.StashResponse
 import org.slf4j.LoggerFactory
@@ -16,6 +17,7 @@ class CustomPoEService @Autowired constructor(
         private val leagueRepository: LeagueRepository,
         private val poeConsumer: PoEConsumer,
         private val staticItemRepository: StaticItemRepository,
+        private val poeItemRepository: PoeItemRepository,
         private val stashMapper: StashMapper
 ) : PoEService {
 
@@ -46,8 +48,9 @@ class CustomPoEService @Autowired constructor(
         Thread {
             while (keepFetchingStashTabs) {
                 log.info("Fetching next page of stash tabs, using id $nextChangeId")
-                val mappedResponse = mapResponse(poeConsumer.parseStashTabs(nextChangeId))
-                nextChangeId = mappedResponse.nextChangeId
+                val stashResponse = mapResponse(poeConsumer.parseStashTabs(nextChangeId))
+                poeItemRepository.saveAll(stashResponse.stashes.flatMap { it.items })
+                nextChangeId = stashResponse.nextChangeId
                 Thread.sleep(10000)
             }
         }.start()

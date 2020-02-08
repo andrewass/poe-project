@@ -1,7 +1,9 @@
 package com.poe.project.service
 
+import com.poe.project.entities.PoeItem
 import com.poe.project.entities.Stash
 import com.poe.project.entities.StaticItem
+import com.poe.project.repositories.PoeItemRepository
 import com.poe.project.repositories.LeagueRepository
 import com.poe.project.repositories.StaticItemRepository
 import com.poe.project.service.response.StashResponse
@@ -41,12 +43,35 @@ class StashMapper @Autowired constructor(
                     lastCharacterName = jsonStash.getString("lastCharacterName"),
                     stashText = jsonStash.getString("stash"),
                     stashType = jsonStash.getString("stashType"),
-                    league = leagueRepository.findLeagueByName(jsonStash.getString("league").toUpperCase())!!
+                    league = leagueRepository.findLeagueByName(jsonStash.getString("league").toUpperCase())
             )
             val stashPrice = extractPrice(stash.stashText)
             val items = jsonStash.getJSONArray("items")
-
+            for (i in 0 until items.length()) {
+                mapItems(stash, items.getJSONObject(i), stashPrice)
+            }
             stashResponse.stashes.add(stash)
+        }
+    }
+
+    private fun mapItems(stash: Stash, jsonItem: JSONObject, stashPrice: Pair<Int, StaticItem?>) {
+        val itemName = jsonItem.getString("name")
+        if (itemName.isNotEmpty()) {
+            val poeItem = PoeItem(
+                    imageUrl = jsonItem.getString("icon"),
+                    textID = jsonItem.getString("id"),
+                    itemName = itemName,
+                    typeLine = jsonItem.getString("typeLine"),
+                    identified = jsonItem.getBoolean("identified"),
+                    stashId = stash.id,
+                    league = stash.league
+            )
+            val priceNote = jsonItem.optString("note", emptyResponse)
+            val itemPrice = extractPrice(priceNote)
+            poeItem.setPrice(itemPrice = itemPrice, stashPrice = stashPrice)
+            if(poeItem.getPrice().first > 0) {
+                stash.items.add(poeItem)
+            }
         }
     }
 

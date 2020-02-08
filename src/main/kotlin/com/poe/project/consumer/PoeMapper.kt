@@ -32,7 +32,7 @@ fun mapStaticItems(items: JSONArray, baseUrl: String): List<StaticItem> {
 private fun getCurrencyArray(staticItems: JSONArray): JSONArray {
     for (i in 0 until staticItems.length()) {
         val staticItem = staticItems.getJSONObject(i)
-        if (staticItem.getString("id").equals("Currency")) {
+        if (staticItem.getString("id") == "Currency") {
             return staticItem.getJSONArray("entries")
         }
     }
