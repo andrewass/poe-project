@@ -1,9 +1,9 @@
 package com.poe.project.service
 
+import com.poe.project.entities.ItemType
 import com.poe.project.entities.PoeItem
 import com.poe.project.entities.Stash
 import com.poe.project.entities.StaticItem
-import com.poe.project.repositories.PoeItemRepository
 import com.poe.project.repositories.LeagueRepository
 import com.poe.project.repositories.StaticItemRepository
 import com.poe.project.service.response.StashResponse
@@ -64,15 +64,20 @@ class StashMapper @Autowired constructor(
                     typeLine = jsonItem.getString("typeLine"),
                     identified = jsonItem.getBoolean("identified"),
                     stashId = stash.id,
-                    league = stash.league
+                    league = stash.league,
+                    itemType = mapItemType(jsonItem.getInt("frameType"))
             )
             val priceNote = jsonItem.optString("note", emptyResponse)
             val itemPrice = extractPrice(priceNote)
             poeItem.setPrice(itemPrice = itemPrice, stashPrice = stashPrice)
-            if(poeItem.getPrice().first > 0) {
+            if (poeItem.getPrice().first > 0) {
                 stash.items.add(poeItem)
             }
         }
+    }
+
+    private fun mapItemType(typeNumber: Int): ItemType? {
+        return enumValues<ItemType>().find { it.number == typeNumber }
     }
 
     private fun extractPrice(description: String): Pair<Int, StaticItem?> {

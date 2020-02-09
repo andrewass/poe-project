@@ -22,7 +22,10 @@ class PoeItem(
 
         val stashId: String = "",
 
-        val identified: Boolean = false
+        val identified: Boolean = false,
+
+        @Enumerated(EnumType.STRING)
+        val itemType: ItemType? = null
 
 ) {
 

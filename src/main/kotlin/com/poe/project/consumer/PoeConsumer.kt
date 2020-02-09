@@ -66,7 +66,6 @@ class PoEConsumer @Autowired constructor(
             log.error("Unable to fetch static items : Statuscode ${response.statusCode}")
             emptyList()
         }
-
     }
 
     fun getLeagues(): List<League> {
