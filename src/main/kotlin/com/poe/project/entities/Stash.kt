@@ -1,5 +1,7 @@
 package com.poe.project.entities
 
+import com.poe.project.entities.tradeitem.PoeItem
+
 class Stash(
         val id: String,
         val stashText: String,

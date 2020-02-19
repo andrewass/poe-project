@@ -1,7 +1,7 @@
 package com.poe.project.service
 
 import com.poe.project.entities.ItemType
-import com.poe.project.entities.PoeItem
+import com.poe.project.entities.tradeitem.PoeItem
 import com.poe.project.entities.Stash
 import com.poe.project.entities.StaticItem
 import com.poe.project.repositories.LeagueRepository
@@ -63,6 +63,7 @@ class StashMapper @Autowired constructor(
                     itemName = itemName,
                     typeLine = jsonItem.getString("typeLine"),
                     identified = jsonItem.getBoolean("identified"),
+                    corrupted = jsonItem.optBoolean("corrupted"),
                     stashId = stash.id,
                     league = stash.league,
                     itemType = mapItemType(jsonItem.getInt("frameType"))

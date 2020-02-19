@@ -21,7 +21,6 @@ class MessageController @Autowired constructor(
     fun postMessage(@RequestBody request: PublicMessageRequest): ResponseEntity<HttpStatus> {
 
         kafkaTemplate.send(request.topic, request.message)
-
         return ResponseEntity(HttpStatus.OK)
     }
 }

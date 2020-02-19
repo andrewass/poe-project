@@ -1,9 +1,8 @@
 package com.poe.project.service
 
 import com.poe.project.consumer.PoEConsumer
-import com.poe.project.entities.ItemType
-import com.poe.project.entities.League
-import com.poe.project.entities.StaticItem
+import com.poe.project.entities.*
+import com.poe.project.entities.tradeitem.PoeItem
 import com.poe.project.repositories.LeagueRepository
 import com.poe.project.repositories.PoeItemRepository
 import com.poe.project.repositories.StaticItemRepository
@@ -50,6 +49,7 @@ class CustomPoEService @Autowired constructor(
             while (keepFetchingStashTabs) {
                 log.info("Fetching next page of stash tabs, using id $nextChangeId")
                 val stashResponse = mapResponse(poeConsumer.parseStashTabs(nextChangeId))
+                deleteOldVersionOfStashWhenUpdating(stashResponse.stashes)
                 poeItemRepository.saveAll(stashResponse.stashes.flatMap { it.items })
                 nextChangeId = stashResponse.nextChangeId
                 Thread.sleep(5000)
@@ -63,6 +63,11 @@ class CustomPoEService @Autowired constructor(
         keepFetchingStashTabs = false
     }
 
+    override fun findTradeItems(itemName: String, leagueName: String): List<PoeItem> {
+        val league = leagueRepository.findByName(leagueName)
+        return poeItemRepository.findAllByItemNameAndLeague(itemName, league!!)
+    }
+
     override fun findTradeItemNames() = tradeItems
 
     private fun fillCacheOfItemNames() {
@@ -74,6 +79,12 @@ class CustomPoEService @Autowired constructor(
                 Thread.sleep(10000)
             }
         }.start()
+    }
+
+    private fun deleteOldVersionOfStashWhenUpdating(stashes: List<Stash>) {
+        for (stash in stashes) {
+            poeItemRepository.deleteAllByStashId(stash.id)
+        }
     }
 
     private fun mapResponse(apiResponse: String): StashResponse {

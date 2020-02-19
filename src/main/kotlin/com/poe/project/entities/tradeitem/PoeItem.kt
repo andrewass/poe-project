@@ -1,5 +1,8 @@
-package com.poe.project.entities
+package com.poe.project.entities.tradeitem
 
+import com.poe.project.entities.ItemType
+import com.poe.project.entities.League
+import com.poe.project.entities.StaticItem
 import javax.persistence.*
 
 @Entity
@@ -23,6 +26,8 @@ class PoeItem(
         val stashId: String = "",
 
         val identified: Boolean = false,
+
+        val corrupted: Boolean = false,
 
         @Enumerated(EnumType.STRING)
         val itemType: ItemType? = null

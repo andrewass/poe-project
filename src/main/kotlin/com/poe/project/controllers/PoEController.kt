@@ -1,7 +1,9 @@
 package com.poe.project.controllers
 
 import com.poe.project.controllers.requests.StashFetchingRequest
+import com.poe.project.controllers.requests.TradeItemsRequest
 import com.poe.project.entities.League
+import com.poe.project.entities.tradeitem.PoeItem
 import com.poe.project.entities.StaticItem
 import com.poe.project.service.PoEService
 import org.springframework.beans.factory.annotation.Autowired
@@ -42,6 +44,20 @@ class PoEController @Autowired constructor(
     fun getStaticItems(): ResponseEntity<List<StaticItem>> {
         val staticItems = poeService.findStaticItems()
         return ResponseEntity(staticItems, HttpStatus.OK)
+    }
+
+    @GetMapping("/available-items")
+    @CrossOrigin("*")
+    fun getAvailableItems(): ResponseEntity<List<String>> {
+        val availableItems = poeService.findTradeItemNames()
+        return ResponseEntity(availableItems, HttpStatus.OK)
+    }
+
+    @PostMapping("/trade-items")
+    @CrossOrigin("*")
+    fun getTradeItems(@RequestBody request: TradeItemsRequest) : ResponseEntity<List<PoeItem>> {
+        val tradeItems = poeService.findTradeItems(request.name, request.league)
+        return ResponseEntity(tradeItems, HttpStatus.OK)
     }
 
 }
