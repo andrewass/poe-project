@@ -38,6 +38,9 @@ class PoeItem(
     @JoinColumn(name = "CURRENCY")
     private var currency: StaticItem? = null
 
+    @OneToMany(mappedBy = "item", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    val properties = mutableListOf<Property>()
+
     private var currencyCount: Int = 0
 
     fun setPrice(stashPrice: Pair<Int, StaticItem?>, itemPrice: Pair<Int, StaticItem?>) {

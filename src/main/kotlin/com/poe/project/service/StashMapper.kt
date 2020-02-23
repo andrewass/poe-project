@@ -4,9 +4,11 @@ import com.poe.project.entities.ItemType
 import com.poe.project.entities.tradeitem.PoeItem
 import com.poe.project.entities.Stash
 import com.poe.project.entities.StaticItem
+import com.poe.project.entities.tradeitem.Property
 import com.poe.project.repositories.LeagueRepository
 import com.poe.project.repositories.StaticItemRepository
 import com.poe.project.service.response.StashResponse
+import org.json.JSONArray
 import org.json.JSONObject
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -74,6 +76,19 @@ class StashMapper @Autowired constructor(
             if (poeItem.getPrice().first > 0) {
                 stash.items.add(poeItem)
             }
+            val properties = jsonItem.optJSONArray("properties") ?: JSONArray()
+            mapProperties(poeItem, properties)
+        }
+    }
+
+    private fun mapProperties(poeItem: PoeItem, properties: JSONArray) {
+        for(i in 0 until properties.length()){
+            val propertyJson = properties.getJSONObject(i)
+            val property = Property(
+                    item = poeItem,
+                    description = propertyJson.getString("name")
+            )
+            poeItem.properties.add(property)
         }
     }
 
