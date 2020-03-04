@@ -45,4 +45,8 @@ class AuthenticationController @Autowired constructor(
         authenticationService.signOutUser(signOutRequest)
         return ResponseEntity(HttpStatus.OK)
     }
+
+    private fun tester(){
+        val terwt = 2312
+    }
 }

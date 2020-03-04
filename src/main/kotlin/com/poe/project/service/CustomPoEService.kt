@@ -89,6 +89,10 @@ class CustomPoEService @Autowired constructor(
         }
     }
 
+    private fun methodToRemove(){
+        val testvalue = 1+1
+    }
+
     private fun mapResponse(apiResponse: String): StashResponse {
         return stashMapper.createStashResponse(apiResponse)
     }

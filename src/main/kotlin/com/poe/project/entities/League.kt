@@ -13,5 +13,7 @@ class League(
 
         val name: String = "",
 
-        var active: Boolean = true
+        var active: Boolean = true,
+
+        val toRemove: Boolean = false
 )
