@@ -1,8 +1,8 @@
 package com.poe.project.controllers
 
 import com.poe.project.controllers.requests.SignInRequest
-import com.poe.project.controllers.requests.SignUpRequest
 import com.poe.project.controllers.requests.SignOutRequest
+import com.poe.project.controllers.requests.SignUpRequest
 import com.poe.project.controllers.responses.SignInResponse
 import com.poe.project.exceptions.UsernameNotAvailableException
 import com.poe.project.service.AuthenticationService
@@ -44,9 +44,5 @@ class AuthenticationController @Autowired constructor(
     fun signOutUser(@RequestBody signOutRequest : SignOutRequest) : ResponseEntity<HttpStatus> {
         authenticationService.signOutUser(signOutRequest)
         return ResponseEntity(HttpStatus.OK)
-    }
-
-    private fun tester(){
-        val terwt = 2312
     }
 }

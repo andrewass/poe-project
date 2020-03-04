@@ -1,17 +1,18 @@
 package com.poe.project.service
 
 import com.poe.project.consumer.PoEConsumer
-import com.poe.project.entities.*
+import com.poe.project.entities.ItemType
+import com.poe.project.entities.League
+import com.poe.project.entities.Stash
+import com.poe.project.entities.StaticItem
 import com.poe.project.entities.tradeitem.PoeItem
 import com.poe.project.repositories.LeagueRepository
 import com.poe.project.repositories.PoeItemRepository
 import com.poe.project.repositories.StaticItemRepository
 import com.poe.project.service.response.StashResponse
-import org.hibernate.Hibernate
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import javax.transaction.Transactional
 
 @Service
 class CustomPoEService @Autowired constructor(
@@ -87,10 +88,6 @@ class CustomPoEService @Autowired constructor(
         for (stash in stashes) {
             poeItemRepository.deleteAllByStashId(stash.id)
         }
-    }
-
-    private fun methodToRemove(){
-        val testvalue = 1+1
     }
 
     private fun mapResponse(apiResponse: String): StashResponse {
