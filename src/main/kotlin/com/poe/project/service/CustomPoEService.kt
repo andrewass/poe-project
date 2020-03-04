@@ -7,9 +7,11 @@ import com.poe.project.repositories.LeagueRepository
 import com.poe.project.repositories.PoeItemRepository
 import com.poe.project.repositories.StaticItemRepository
 import com.poe.project.service.response.StashResponse
+import org.hibernate.Hibernate
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import javax.transaction.Transactional
 
 @Service
 class CustomPoEService @Autowired constructor(
@@ -65,7 +67,7 @@ class CustomPoEService @Autowired constructor(
 
     override fun findTradeItems(itemName: String, leagueName: String): List<PoeItem> {
         val league = leagueRepository.findByName(leagueName)
-        return poeItemRepository.findAllByItemNameAndLeague(itemName, league!!)
+        return  poeItemRepository.findAllByItemNameAndLeague(itemName, league!!)
     }
 
     override fun findTradeItemNames() = tradeItems

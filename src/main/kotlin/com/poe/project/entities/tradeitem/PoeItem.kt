@@ -38,8 +38,11 @@ class PoeItem(
     @JoinColumn(name = "CURRENCY")
     private var currency: StaticItem? = null
 
-    @OneToMany(mappedBy = "item", cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "item", cascade = [CascadeType.ALL])
     val properties = mutableListOf<Property>()
+
+    @OneToMany(mappedBy = "item", cascade = [CascadeType.ALL])
+    val modifications = mutableListOf<Modification>()
 
     private var currencyCount: Int = 0
 

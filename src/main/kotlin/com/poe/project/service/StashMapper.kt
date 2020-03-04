@@ -1,9 +1,10 @@
 package com.poe.project.service
 
 import com.poe.project.entities.ItemType
-import com.poe.project.entities.tradeitem.PoeItem
 import com.poe.project.entities.Stash
 import com.poe.project.entities.StaticItem
+import com.poe.project.entities.tradeitem.Modification
+import com.poe.project.entities.tradeitem.PoeItem
 import com.poe.project.entities.tradeitem.Property
 import com.poe.project.repositories.LeagueRepository
 import com.poe.project.repositories.StaticItemRepository
@@ -76,19 +77,32 @@ class StashMapper @Autowired constructor(
             if (poeItem.getPrice().first > 0) {
                 stash.items.add(poeItem)
             }
-            val properties = jsonItem.optJSONArray("properties") ?: JSONArray()
-            mapProperties(poeItem, properties)
+            mapProperties(poeItem, jsonItem.optJSONArray("properties") ?: JSONArray())
+            mapModifications(poeItem, jsonItem.optJSONArray("implicitMods") ?: JSONArray(), isImplicit = true)
+            mapModifications(poeItem, jsonItem.optJSONArray("explicitMods") ?: JSONArray(), isImplicit = false)
         }
     }
 
     private fun mapProperties(poeItem: PoeItem, properties: JSONArray) {
-        for(i in 0 until properties.length()){
+        for (i in 0 until properties.length()) {
             val propertyJson = properties.getJSONObject(i)
             val property = Property(
                     item = poeItem,
                     description = propertyJson.getString("name")
             )
             poeItem.properties.add(property)
+        }
+    }
+
+    private fun mapModifications(poeItem: PoeItem, modifications: JSONArray, isImplicit: Boolean) {
+        for (i in 0 until modifications.length()) {
+            val description = modifications.getString(i)
+            val modification = Modification(
+                    item = poeItem,
+                    description = description,
+                    isImplicit = isImplicit
+            )
+            poeItem.modifications.add(modification)
         }
     }
 
